@@ -17,68 +17,24 @@ from django.utils.timezone import now
 def home(request):
     return render(request, 'rental/home.html')
 
+
 @login_required
-# def dashboard(request):
-#     current_year = now().year
-#     current_month = now().month
-
-#     # Contoh data bulan ini, bisa disesuaikan
-#     jumlah_motor = Motor.objects.count()
-#     jumlah_transaksi = Transaksi.objects.filter(
-#         tanggal_sewa__year=current_year,
-#         tanggal_sewa__month=current_month
-#     ).count()
-#     transaksi_selesai = Transaksi.objects.filter(
-#         tanggal_sewa__year=current_year,
-#         tanggal_sewa__month=current_month,
-#         status_pengembalian=True
-#     ).count()
-#     jumlah_pelanggan = Pelanggan.objects.count()
-
-#     context = {
-#         'jumlah_motor': jumlah_motor,
-#         'jumlah_transaksi': jumlah_transaksi,
-#         'transaksi_selesai': transaksi_selesai,
-#         'jumlah_pelanggan': jumlah_pelanggan,
-#         'bulan': now().strftime('%B %Y'),
-#     }
-#     return render(request, 'rental/dashboard.html', context)
 def dashboard(request):
-    current_year = now().year
-    current_month = now().month
+    total_motor = Motor.objects.count()
+    tersedia = Motor.objects.filter(tersedia=True).count()
+    tidak_tersedia = total_motor - tersedia
 
-    jumlah_motor = Motor.objects.count()
-
-    jumlah_transaksi = Transaksi.objects.filter(
-        tanggal_sewa__year=current_year,
-        tanggal_sewa__month=current_month
-    ).count()
-
-    transaksi_selesai = Transaksi.objects.filter(
-        tanggal_sewa__year=current_year,
-        tanggal_sewa__month=current_month,
-        status_pengembalian=True
-    ).count()
-
-    jumlah_pelanggan = Pelanggan.objects.count()
-
-    motor_per_merk = Motor.objects.values('merk').annotate(count=Count('id')).order_by('-count')
-
-    merk_labels = [item['merk'] for item in motor_per_merk]
-    merk_counts = [item['count'] for item in motor_per_merk]
+    total_transaksi = Transaksi.objects.count()
+    sudah_kembali = Transaksi.objects.filter(status_pengembalian=True).count()
+    belum_kembali = total_transaksi - sudah_kembali
 
     context = {
-        'jumlah_motor': jumlah_motor,
-        'jumlah_transaksi': jumlah_transaksi,
-        'transaksi_selesai': transaksi_selesai,
-        'jumlah_pelanggan': jumlah_pelanggan,
-        'bulan': now().strftime('%B %Y'),
-        'merk_labels': merk_labels,
-        'merk_counts': merk_counts,
+        'tersedia': tersedia,
+        'tidak_tersedia': tidak_tersedia,
+        'sudah_kembali': sudah_kembali,
+        'belum_kembali': belum_kembali,
     }
     return render(request, 'rental/dashboard.html', context)
-
-
 
 # ================== PDF ====================
 @login_required
