@@ -2,9 +2,9 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm border-0">
+        <div class="card border-0" style="box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; border-radius: 7px;">
             <div class="card-header bg-dark text-white">
-                <h5 class="mb-0">{{ title }}</h5>
+                <h5 class="mb-0 text-center">{{ title }}</h5>
             </div>
             <div class="card-body bg-light">
                 <form method="post" novalidate>
@@ -21,6 +21,13 @@
                             {% endfor %}
                         </div>
                     {% endfor %}
+
+                    <!-- Tambahan manual untuk total_harga -->
+                    <!-- <div class="mb-3">
+                        <label for="id_total_harga" class="form-label fw-semibold">Total Harga</label>
+                        <input type="number" step="0.01" readonly id="id_total_harga" name="total_harga" class="form-control">
+                    </div> -->
+
                     <div class="d-flex justify-content-between">
                         <a href="javascript:history.back()" class="btn btn-sm btn-secondary">← Kembali</a>
                         <button type="submit" class="btn btn-sm btn-success">💾 Simpan</button>
@@ -30,4 +37,38 @@
         </div>
     </div>
 </div>
+
+<!-- SCRIPT: Hitung total harga otomatis -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const motorSelect = document.getElementById('id_motor');
+        const tanggalSewa = document.getElementById('id_tanggal_sewa');
+        const tanggalKembali = document.getElementById('id_tanggal_kembali');
+        const totalHarga = document.getElementById('id_total_harga');
+
+        let motorHargaMap = {};
+
+        {% for motor in motor_list %}
+            motorHargaMap["{{ motor.id }}"] = {{ motor.harga_sewa_per_hari }};
+        {% endfor %}
+
+        function hitungTotal() {
+            const motorId = motorSelect.value;
+            const tglAwal = new Date(tanggalSewa.value);
+            const tglAkhir = new Date(tanggalKembali.value);
+
+            if (motorId && !isNaN(tglAwal) && !isNaN(tglAkhir) && tglAkhir >= tglAwal) {
+                const selisihHari = Math.ceil((tglAkhir - tglAwal) / (1000 * 60 * 60 * 24));
+                const harga = motorHargaMap[motorId] || 0;
+                totalHarga.value = harga * selisihHari;
+            } else {
+                totalHarga.value = '';
+            }
+        }
+
+        motorSelect.addEventListener('change', hitungTotal);
+        tanggalSewa.addEventListener('change', hitungTotal);
+        tanggalKembali.addEventListener('change', hitungTotal);
+    });
+</script>
 {% endblock %}
