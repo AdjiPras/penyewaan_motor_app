@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Motor, Pelanggan, Transaksi
+from .models import Motor, Pelanggan, Transaksi, Motor, Pelanggan
 from .forms import MotorForm, PelangganForm, TransaksiForm
 
 from django.http import HttpResponse
@@ -7,12 +7,78 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
+from django.utils import timezone
 
+from django.utils.timezone import now
 
 # Home
 @login_required
 def home(request):
     return render(request, 'rental/home.html')
+
+@login_required
+# def dashboard(request):
+#     current_year = now().year
+#     current_month = now().month
+
+#     # Contoh data bulan ini, bisa disesuaikan
+#     jumlah_motor = Motor.objects.count()
+#     jumlah_transaksi = Transaksi.objects.filter(
+#         tanggal_sewa__year=current_year,
+#         tanggal_sewa__month=current_month
+#     ).count()
+#     transaksi_selesai = Transaksi.objects.filter(
+#         tanggal_sewa__year=current_year,
+#         tanggal_sewa__month=current_month,
+#         status_pengembalian=True
+#     ).count()
+#     jumlah_pelanggan = Pelanggan.objects.count()
+
+#     context = {
+#         'jumlah_motor': jumlah_motor,
+#         'jumlah_transaksi': jumlah_transaksi,
+#         'transaksi_selesai': transaksi_selesai,
+#         'jumlah_pelanggan': jumlah_pelanggan,
+#         'bulan': now().strftime('%B %Y'),
+#     }
+#     return render(request, 'rental/dashboard.html', context)
+def dashboard(request):
+    current_year = now().year
+    current_month = now().month
+
+    jumlah_motor = Motor.objects.count()
+
+    jumlah_transaksi = Transaksi.objects.filter(
+        tanggal_sewa__year=current_year,
+        tanggal_sewa__month=current_month
+    ).count()
+
+    transaksi_selesai = Transaksi.objects.filter(
+        tanggal_sewa__year=current_year,
+        tanggal_sewa__month=current_month,
+        status_pengembalian=True
+    ).count()
+
+    jumlah_pelanggan = Pelanggan.objects.count()
+
+    motor_per_merk = Motor.objects.values('merk').annotate(count=Count('id')).order_by('-count')
+
+    merk_labels = [item['merk'] for item in motor_per_merk]
+    merk_counts = [item['count'] for item in motor_per_merk]
+
+    context = {
+        'jumlah_motor': jumlah_motor,
+        'jumlah_transaksi': jumlah_transaksi,
+        'transaksi_selesai': transaksi_selesai,
+        'jumlah_pelanggan': jumlah_pelanggan,
+        'bulan': now().strftime('%B %Y'),
+        'merk_labels': merk_labels,
+        'merk_counts': merk_counts,
+    }
+    return render(request, 'rental/dashboard.html', context)
+
+
 
 # ================== PDF ====================
 @login_required

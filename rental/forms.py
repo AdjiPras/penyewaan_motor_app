@@ -12,11 +12,26 @@ class PelangganForm(forms.ModelForm):
         model = Pelanggan
         fields = '__all__'
 
+# class TransaksiForm(forms.ModelForm):
+#     class Meta:
+#         model = Transaksi
+#         fields = '__all__'
+#         widgets = {
+#             'tanggal_sewa': forms.DateInput(attrs={'type': 'date'}),
+#             'tanggal_kembali': forms.DateInput(attrs={'type': 'date'}),
+#         }
+
+
 class TransaksiForm(forms.ModelForm):
     class Meta:
         model = Transaksi
         fields = '__all__'
         widgets = {
-            'tanggal_sewa': forms.DateInput(attrs={'type': 'date'}),
-            'tanggal_kembali': forms.DateInput(attrs={'type': 'date'}),
+            'tanggal_sewa': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'tanggal_kembali': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})

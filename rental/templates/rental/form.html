@@ -1,5 +1,35 @@
 {% extends 'rental/base.html' %}
 {% block content %}
+<div class="container">
+    <h2 class="mb-4">{{ title }}</h2>
+
+    <form method="post" class="card shadow p-4">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <div class="text-danger small">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="d-flex justify-content-between">
+            <a href="javascript:history.back()" class="btn btn-secondary">Kembali</a>
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+
+<!-- {% extends 'rental/base.html' %}
+{% block content %}
 <h2>{{ title }}</h2>
 <form method="post">
     {% csrf_token %}
@@ -7,4 +37,5 @@
     <button type="submit" class="btn btn-primary">Simpan</button>
     <a href="javascript:history.back()" class="btn btn-secondary">Kembali</a>
 </form>
-{% endblock %}
+{% endblock %} -->
+
