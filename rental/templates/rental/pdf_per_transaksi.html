@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><title>Transaksi #{{ t.pk }}</title></head>
+<body>
+<h2>Detail Transaksi Penyewaan Motor</h2>
+<table border="0" cellpadding="4">
+<tr><td><strong>ID Transaksi</strong></td><td>: {{ t.pk }}</td></tr>
+<tr><td><strong>Nama Pelanggan</strong></td><td>: {{ t.pelanggan.nama }}</td></tr>
+<tr><td><strong>Motor</strong></td><td>: {{ t.motor.merk }} - {{ t.motor.plat_nomor }}</td></tr>
+<tr><td><strong>Tanggal Sewa</strong></td><td>: {{ t.tanggal_sewa }}</td></tr>
+<tr><td><strong>Tanggal Kembali</strong></td><td>: {{ t.tanggal_kembali }}</td></tr>
+<tr><td><strong>Total Harga</strong></td><td>: Rp {{ t.total_harga|floatformat:0 }}</td></tr>
+<tr><td><strong>Status Pengembalian</strong></td><td>: 
+    {% if t.status_pengembalian %} Sudah Dikembalikan {% else %} Belum {% endif %}
+</td></tr>
+</table>
+</body>
+</html>

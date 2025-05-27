@@ -1,0 +1,21 @@
+{% extends 'rental/base.html' %}
+{% block content %}
+<h2>Daftar Pelanggan</h2>
+<a href="{% url 'pelanggan_create' %}" class="btn btn-success mb-2">Tambah Pelanggan</a>
+<table class="table table-bordered">
+    <tr>
+        <th>Nama</th><th>No KTP</th><th>Alamat</th><th>Aksi</th>
+    </tr>
+    {% for p in data %}
+    <tr>
+        <td>{{ p.nama }}</td>
+        <td>{{ p.no_ktp }}</td>
+        <td>{{ p.alamat }}</td>
+        <td>
+            <a href="{% url 'pelanggan_edit' p.pk %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'pelanggan_delete' p.pk %}" class="btn btn-sm btn-danger">Hapus</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

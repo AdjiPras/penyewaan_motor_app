@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head><title>Laporan Transaksi</title></head>
+<body>
+<h2>Laporan Transaksi Penyewaan Motor</h2>
+<table border="1" cellspacing="0" cellpadding="4">
+<tr>
+    <th>Nama</th><th>Motor</th><th>Tgl Sewa</th><th>Tgl Kembali</th><th>Total</th>
+</tr>
+{% for t in data %}
+<tr>
+    <td>{{ t.pelanggan.nama }}</td>
+    <td>{{ t.motor.plat_nomor }}</td>
+    <td>{{ t.tanggal_sewa }}</td>
+    <td>{{ t.tanggal_kembali }}</td>
+    <td>{{ t.total_harga }}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
