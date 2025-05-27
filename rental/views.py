@@ -12,6 +12,7 @@ from django.utils import timezone
 
 from django.utils.timezone import now
 
+
 # Home
 @login_required
 def home(request):
@@ -20,20 +21,30 @@ def home(request):
 
 @login_required
 def dashboard(request):
+    # Data motor
     total_motor = Motor.objects.count()
     tersedia = Motor.objects.filter(tersedia=True).count()
     tidak_tersedia = total_motor - tersedia
 
+    # Data transaksi
     total_transaksi = Transaksi.objects.count()
     sudah_kembali = Transaksi.objects.filter(status_pengembalian=True).count()
     belum_kembali = total_transaksi - sudah_kembali
+
+    # Data pelanggan berdasarkan status
+    pelanggan_status = Pelanggan.objects.values('status').annotate(jumlah=Count('id'))
+    status_labels = [item['status'] for item in pelanggan_status]
+    status_counts = [item['jumlah'] for item in pelanggan_status]
 
     context = {
         'tersedia': tersedia,
         'tidak_tersedia': tidak_tersedia,
         'sudah_kembali': sudah_kembali,
         'belum_kembali': belum_kembali,
+        'status_labels': status_labels,
+        'status_counts': status_counts,
     }
+
     return render(request, 'rental/dashboard.html', context)
 
 # ================== PDF ====================
@@ -69,7 +80,7 @@ def motor_create(request):
     if form.is_valid():
         form.save()
         return redirect('motor_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Motor'})
+    return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Data Motor'})
 
 @login_required
 def motor_edit(request, pk):
@@ -78,7 +89,7 @@ def motor_edit(request, pk):
     if form.is_valid():
         form.save()
         return redirect('motor_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Edit Motor'})
+    return render(request, 'rental/form.html', {'form': form, 'title': 'Edit Data Motor'})
 
 @login_required
 def motor_delete(request, pk):
@@ -101,7 +112,7 @@ def pelanggan_create(request):
     if form.is_valid():
         form.save()
         return redirect('pelanggan_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Pelanggan'})
+    return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Data Pelanggan'})
 
 @login_required
 def pelanggan_edit(request, pk):
@@ -110,7 +121,7 @@ def pelanggan_edit(request, pk):
     if form.is_valid():
         form.save()
         return redirect('pelanggan_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Edit Pelanggan'})
+    return render(request, 'rental/form.html', {'form': form, 'title': 'Edit Data Pelanggan'})
 
 @login_required
 def pelanggan_delete(request, pk):
@@ -131,22 +142,80 @@ def transaksi_list(request):
         data = Transaksi.objects.all()
     return render(request, 'rental/transaksi_list.html', {'data': data, 'query': query})
 
-@login_required
-def transaksi_create(request):
-    form = TransaksiForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('transaksi_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Transaksi'})
 
 @login_required
+# def transaksi_create(request):
+#     if request.method == 'POST':
+#         form = TransaksiForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('transaksi_list')  # Tambahkan redirect setelah simpan
+#     else:
+#         form = TransaksiForm()
+#     return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Data Transaksi'})
+
+def transaksi_create(request):
+    if request.method == 'POST':
+        form = TransaksiForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('transaksi_list')  # Ganti sesuai nama url kamu
+    else:
+        form = TransaksiForm()
+
+    # Motor list dikirim ke template untuk JavaScript
+    motor_list = Motor.objects.all()
+    
+    return render(request, 'rental/form.html', {
+        'form': form,
+        'motor_list': motor_list,
+        'title': 'Tambah Transaksi',
+    })
+
+# def transaksi_create(request):
+#     if request.method == 'POST':
+#         form = TransaksiForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('transaksi_list')  # Sesuaikan dengan URL Anda
+#     else:
+#         form = TransaksiForm()
+
+#     motor_list = Motor.objects.all()
+#     return render(request, 'transaksi_form.html', {'form': form, 'motor_list': motor_list})
+
+    
+
+@login_required
+# def transaksi_edit(request, pk):
+#     transaksi = get_object_or_404(Transaksi, pk=pk)
+#     if request.method == 'POST':
+#         form = TransaksiForm(request.POST, instance=transaksi)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('transaksi_list')
+#     else:
+#         form = TransaksiForm(instance=transaksi)
+#     return render(request, 'rental/form.html', {'form': form, 'title': 'Edit Data Transaksi'})
+
 def transaksi_edit(request, pk):
-    obj = get_object_or_404(Transaksi, pk=pk)
-    form = TransaksiForm(request.POST or None, instance=obj)
-    if form.is_valid():
-        form.save()
-        return redirect('transaksi_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Edit Transaksi'})
+    transaksi = get_object_or_404(Transaksi, pk=pk)
+    if request.method == 'POST':
+        form = TransaksiForm(request.POST, instance=transaksi)
+        if form.is_valid():
+            form.save()
+            return redirect('transaksi_list')
+    else:
+        form = TransaksiForm(instance=transaksi)
+
+    motor_list = Motor.objects.all()
+    
+    return render(request, 'rental/form.html', {
+        'form': form,
+        'motor_list': motor_list,
+        'title': 'Edit Transaksi',
+    })
+
 
 @login_required
 def transaksi_delete(request, pk):
@@ -164,4 +233,7 @@ def kembalikan_motor(request, pk):
     transaksi.motor.save()
     transaksi.save()
     return redirect('transaksi_list')
+
+
+
 

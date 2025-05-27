@@ -40,18 +40,26 @@
 
         <div class="row g-4">
             <!-- Ketersediaan Motor -->
-            <div class="col-md-6">
-                <div class="chart-card bg-white">
+            <div class="col-md-4">
+                <div class="chart-card bg-white" style="box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; border-radius: 7px;">
                     <h5 class="text-center mb-3">Status Ketersediaan Motor</h5>
                     <canvas id="pieMotor"></canvas>
                 </div>
             </div>
 
             <!-- Status Pengembalian -->
-            <div class="col-md-6">
-                <div class="chart-card bg-white">
+            <div class="col-md-4">
+                <div class="chart-card bg-white" style="box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; border-radius: 7px;">
                     <h5 class="text-center mb-3">Status Pengembalian Transaksi</h5>
                     <canvas id="pieTransaksi"></canvas>
+                </div>
+            </div>
+
+            <!-- Status Pelanggan -->
+            <div class="col-md-4">
+                <div class="chart-card bg-white" style="box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; border-radius: 7px;">
+                    <h5 class="text-center mb-3">Status Pelanggan</h5>
+                    <canvas id="piePelanggan"></canvas>
                 </div>
             </div>
         </div>
@@ -100,7 +108,7 @@
         new Chart(ctxTransaksi, {
             type: 'pie',
             data: {
-                labels: ['Sudah Dikembalikan', 'Belum Dikembalikan'],
+                labels: ['Sudah', 'Belum'],
                 datasets: [{
                     label: 'Transaksi',
                     data: [{{ sudah_kembali }}, {{ belum_kembali }}],
@@ -132,6 +140,45 @@
                 }
             }
         });
+
+        const ctxPelanggan = document.getElementById('piePelanggan').getContext('2d');
+        new Chart(ctxPelanggan, {
+            type: 'pie',
+            data: {
+                labels: [{% for label in status_labels %}'{{ label }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Pelanggan',
+                    data: [{% for count in status_counts %}{{ count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                    backgroundColor: ['#6610f2', '#20c997', '#fd7e14', '#6c757d'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#333',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.parsed || 0;
+                                return `${label}: ${value} pelanggan`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+
     </script>
 
     <!-- Bootstrap JS (Opsional jika kamu pakai fitur interaktif Bootstrap) -->
