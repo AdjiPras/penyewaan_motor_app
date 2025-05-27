@@ -3,9 +3,26 @@ from django import forms
 from .models import Motor, Pelanggan, Transaksi
 
 class MotorForm(forms.ModelForm):
+    STATUS_TERSEDIA = [
+        (True, '✅ Tersedia'),
+        (False, '❌ Tidak Tersedia'),
+    ]
+
+    tersedia = forms.ChoiceField(
+        choices=STATUS_TERSEDIA,
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+
     class Meta:
         model = Motor
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(MotorForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            # Jangan override class di field 'tersedia' karena sudah pakai 'form-select'
+            if field_name != 'tersedia':
+                field.widget.attrs.update({'class': 'form-control'})
 
 class PelangganForm(forms.ModelForm):
     class Meta:
