@@ -49,13 +49,23 @@ def dashboard(request):
 
 # ================== PDF ====================
 @login_required
+# def export_pdf_transaksi(request):
+#     transaksi = Transaksi.objects.all()
+#     template = get_template('rental/pdf_transaksi.html')
+#     html = template.render({'data': transaksi})
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'attachment; filename="laporan_transaksi.pdf"'
+#     pisa.CreatePDF(html, dest=response)
+#     return response
 def export_pdf_transaksi(request):
     transaksi = Transaksi.objects.all()
     template = get_template('rental/pdf_transaksi.html')
     html = template.render({'data': transaksi})
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="laporan_transaksi.pdf"'
-    pisa.CreatePDF(html, dest=response)
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Terjadi kesalahan saat generate PDF: ' + str(pisa_status.err))
     return response
 
 @login_required
@@ -135,7 +145,7 @@ def pelanggan_delete(request, pk):
 # ================== TRANSAKSI ====================
 @login_required
 def transaksi_list(request):
-    query = request.GET.get('q')
+    query = request.GET.get('q','')
     if query:
         data = Transaksi.objects.filter(pelanggan__nama__icontains=query)
     else:
@@ -144,16 +154,6 @@ def transaksi_list(request):
 
 
 @login_required
-# def transaksi_create(request):
-#     if request.method == 'POST':
-#         form = TransaksiForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('transaksi_list')  # Tambahkan redirect setelah simpan
-#     else:
-#         form = TransaksiForm()
-#     return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Data Transaksi'})
-
 def transaksi_create(request):
     if request.method == 'POST':
         form = TransaksiForm(request.POST)
@@ -172,32 +172,9 @@ def transaksi_create(request):
         'title': 'Tambah Transaksi',
     })
 
-# def transaksi_create(request):
-#     if request.method == 'POST':
-#         form = TransaksiForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('transaksi_list')  # Sesuaikan dengan URL Anda
-#     else:
-#         form = TransaksiForm()
-
-#     motor_list = Motor.objects.all()
-#     return render(request, 'transaksi_form.html', {'form': form, 'motor_list': motor_list})
-
     
 
 @login_required
-# def transaksi_edit(request, pk):
-#     transaksi = get_object_or_404(Transaksi, pk=pk)
-#     if request.method == 'POST':
-#         form = TransaksiForm(request.POST, instance=transaksi)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('transaksi_list')
-#     else:
-#         form = TransaksiForm(instance=transaksi)
-#     return render(request, 'rental/form.html', {'form': form, 'title': 'Edit Data Transaksi'})
-
 def transaksi_edit(request, pk):
     transaksi = get_object_or_404(Transaksi, pk=pk)
     if request.method == 'POST':
