@@ -14,7 +14,17 @@
                     {% for field in form %}
                         <div class="mb-3">
                             <label for="{{ field.id_for_label }}" class="form-label fw-semibold">{{ field.label }}</label>
-                            {{ field }}
+
+                            {% if field.name == "jenis_kelamin" %}
+                                <select name="{{ field.html_name }}" class="form-control" id="{{ field.id_for_label }}">
+                                    <option value="">Pilih :</option>
+                                    <option value="Pria" {% if field.value == "Pria" %}selected{% endif %}>Pria</option>
+                                    <option value="Wanita" {% if field.value == "Wanita" %}selected{% endif %}>Wanita</option>
+                                </select>
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+
                             {% if field.help_text %}
                                 <small class="form-text text-muted">{{ field.help_text }}</small>
                             {% endif %}
@@ -26,7 +36,7 @@
 
                     <div class="d-flex justify-content-between">
                         <a href="javascript:history.back()" class="btn btn-sm btn-secondary">← Kembali</a>
-                        <button type="submit" class="btn btn-sm btn-success"> Simpan</button>
+                        <button type="submit" class="btn btn-sm btn-success">Simpan</button>
                     </div>
                 </form>
             </div>
@@ -42,29 +52,31 @@
         const tanggalKembali = document.getElementById('id_tanggal_kembali');
         const totalHarga = document.getElementById('id_total_harga');
 
-        let motorHargaMap = {};
+        if (motorSelect && tanggalSewa && tanggalKembali && totalHarga) {
+            const motorHargaMap = {};
 
-        {% for motor in motor_list %}
-            motorHargaMap["{{ motor.id }}"] = {{ motor.harga_sewa_per_hari }};
-        {% endfor %}
+            {% for motor in motor_list %}
+                motorHargaMap["{{ motor.id }}"] = {{ motor.harga_sewa_per_hari }};
+            {% endfor %}
 
-        function hitungTotal() {
-            const motorId = motorSelect.value;
-            const tglAwal = new Date(tanggalSewa.value);
-            const tglAkhir = new Date(tanggalKembali.value);
+            function hitungTotal() {
+                const motorId = motorSelect.value;
+                const tglAwal = new Date(tanggalSewa.value);
+                const tglAkhir = new Date(tanggalKembali.value);
 
-            if (motorId && !isNaN(tglAwal) && !isNaN(tglAkhir) && tglAkhir >= tglAwal) {
-                const selisihHari = Math.ceil((tglAkhir - tglAwal) / (1000 * 60 * 60 * 24));
-                const harga = motorHargaMap[motorId] || 0;
-                totalHarga.value = harga * selisihHari;
-            } else {
-                totalHarga.value = '';
+                if (motorId && !isNaN(tglAwal) && !isNaN(tglAkhir) && tglAkhir >= tglAwal) {
+                    const selisihHari = Math.ceil((tglAkhir - tglAwal) / (1000 * 60 * 60 * 24));
+                    const harga = motorHargaMap[motorId] || 0;
+                    totalHarga.value = harga * selisihHari;
+                } else {
+                    totalHarga.value = '';
+                }
             }
-        }
 
-        motorSelect.addEventListener('change', hitungTotal);
-        tanggalSewa.addEventListener('change', hitungTotal);
-        tanggalKembali.addEventListener('change', hitungTotal);
+            motorSelect.addEventListener('change', hitungTotal);
+            tanggalSewa.addEventListener('change', hitungTotal);
+            tanggalKembali.addEventListener('change', hitungTotal);
+        }
     });
 </script>
 
