@@ -3,6 +3,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+<<<<<<< HEAD
     <title>Invoice #{{ t.pelanggan.nama }}</title>
     <style>
         body {
@@ -46,10 +47,35 @@
 
         .info-pair span {
             display: inline-block;
+=======
+    <title>Invoice Transaksi #{{ t.pk }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+
+        .invoice-box {
+            max-width: 700px;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ffffff;
+            background-color: #2968a7;
+            font-size: 20px;
+>>>>>>> d7b42aa0a03657940f73552734bfe074ea0b7528
         }
 
         table {
             width: 100%;
+<<<<<<< HEAD
             border-collapse: collapse;
             margin-top: 10px;
         }
@@ -175,6 +201,95 @@
         Dicetak pada: {{ now|date:"d M Y H:i" }}<br>
         Terima kasih atas kepercayaan Anda menyewa motor di tempat kami.<br>
         <strong>NAMA BRAND</strong>
+=======
+            line-height: 1.6;
+            border-collapse: collapse;
+        }
+
+        table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .heading td {
+            background: #f7f7f7;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .details td {
+            padding: 8px 5px;
+        }
+
+        .total {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .status {
+            padding-top: 20px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #ffffff;
+            background-color: #2968a7;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="invoice-box">
+        <h2>Invoice Transaksi Penyewaan Motor</h2>
+        <table>
+            <tr class="heading">
+                <td>Informasi Transaksi</td>
+                <td>Detail</td>
+            </tr>
+            <tr class="details">
+                <td>ID Transaksi</td>
+                <td>{{ t.pk }}</td>
+            </tr>
+            <tr class="details">
+                <td>Nama Pelanggan</td>
+                <td>{{ t.pelanggan.nama }}</td>
+            </tr>
+            <tr class="details">
+                <td>Motor</td>
+                <td>{{ t.motor.merk }} - {{ t.motor.plat_nomor }}</td>
+            </tr>
+            <tr class="details">
+                <td>Tanggal Sewa</td>
+                <td>{{ t.tanggal_sewa }}</td>
+            </tr>
+            <tr class="details">
+                <td>Tanggal Kembali</td>
+                <td>{{ t.tanggal_kembali }}</td>
+            </tr>
+            <tr class="details total">
+                <td>Total Harga</td>
+                <td>Rp {{ t.total_harga|rupiah }}</td>
+            </tr>
+        </table>
+
+        <p class="status">
+            Status Pengembalian:
+            {% if t.status_pengembalian %}
+                <span style="color: green;">Sudah Dikembalikan</span>
+            {% else %}
+                <span style="color: red;">Belum Dikembalikan</span>
+            {% endif %}
+        </p>
+
+        <div class="footer">
+            Dicetak pada: {{ now|date:"d M Y H:i" }}<br>
+            Terima kasih atas kepercayaan Anda menyewa motor di tempat kami.<br>
+            NAMA BRAND
+        </div>
+>>>>>>> d7b42aa0a03657940f73552734bfe074ea0b7528
     </div>
 </body>
 </html>
