@@ -3,10 +3,9 @@
 {% block content %}
 
 <h2>Daftar Transaksi</h2>
-
 <div class="d-flex align-items-center gap-2 mb-3">
     <a href="{% url 'transaksi_create' %}" class="btn btn-sm btn-success">
-         <i class="fa fa-plus" aria-hidden="true"></i> Transaksi</a>
+         <i class="fa fa-plus-square" aria-hidden="true"></i> Transaksi</a>
     <a href="{% url 'export_pdf_transaksi' %}" class="btn btn-sm btn-warning">
         <i class="fa fa-print" aria-hidden="true"></i> Cetak PDF</a>
 
@@ -62,4 +61,5 @@
     </tr>
     {% endfor %}
 </table>
+
 {% endblock %}

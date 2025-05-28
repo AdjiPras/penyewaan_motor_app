@@ -49,14 +49,6 @@ def dashboard(request):
 
 # ================== PDF ====================
 @login_required
-# def export_pdf_transaksi(request):
-#     transaksi = Transaksi.objects.all()
-#     template = get_template('rental/pdf_transaksi.html')
-#     html = template.render({'data': transaksi})
-#     response = HttpResponse(content_type='application/pdf')
-#     response['Content-Disposition'] = 'attachment; filename="laporan_transaksi.pdf"'
-#     pisa.CreatePDF(html, dest=response)
-#     return response
 def export_pdf_transaksi(request):
     transaksi = Transaksi.objects.all()
     template = get_template('rental/pdf_transaksi.html')

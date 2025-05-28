@@ -1,22 +1,37 @@
 {% extends 'rental/base.html' %}
+{% load format_uang %}
 {% block content %}
+
+
 <h2>Daftar Motor</h2>
-<a href="{% url 'motor_create' %}" class="btn btn-sm btn-success mb-2">Tambah Motor</a>
+<a href="{% url 'motor_create' %}" class="btn btn-sm btn-success mb-2">
+    <i class="fa fa-plus-square" aria-hidden="true"></i> Motor
+</a>
 <table class="table table-bordered">
-    <tr>
-        <th>Merk</th><th>Plat Nomor</th><th>Harga Sewa</th><th>Tersedia</th><th>Aksi</th>
+    <tr style="text-align: center;">
+        <th>Merk</th>
+        <th>Plat Nomor</th>
+        <th>Harga Sewa</th>
+        <th>Tersedia</th>
+        <th>Aksi</th>
     </tr>
     {% for motor in data %}
     <tr>
         <td>{{ motor.merk }}</td>
         <td>{{ motor.plat_nomor }}</td>
-        <td>{{ motor.harga_sewa_per_hari }}</td>
+        <td>Rp. {{ motor.harga_sewa_per_hari|rupiah }}</td>
         <td>{{ motor.tersedia }}</td>
-        <td>
-            <a href="{% url 'motor_edit' motor.pk %}" class="btn btn-sm btn-warning">Edit</a>
-            <a href="{% url 'motor_delete' motor.pk %}" class="btn btn-sm btn-danger">Hapus</a>
+        <td style="text-align: center;">
+            <a href="{% url 'motor_edit' motor.pk %}" class="btn btn-sm btn-primary">
+                <i class="fa fa-pencil-square" aria-hidden="true"></i>
+            </a>
+            <a href="{% url 'motor_delete' motor.pk %}" class="btn btn-sm btn-danger">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </a>
         </td>
     </tr>
     {% endfor %}
 </table>
+
+
 {% endblock %}
