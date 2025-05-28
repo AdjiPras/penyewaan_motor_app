@@ -1,3 +1,4 @@
+{% load format_uang %}
 <!DOCTYPE html>
 <html>
 <head><title>Laporan Transaksi</title></head>
@@ -13,7 +14,7 @@
     <td>{{ t.motor.plat_nomor }}</td>
     <td>{{ t.tanggal_sewa }}</td>
     <td>{{ t.tanggal_kembali }}</td>
-    <td>{{ t.total_harga }}</td>
+    <td>{{ t.total_harga|rupiah }}</td>
 </tr>
 {% endfor %}
 </table>

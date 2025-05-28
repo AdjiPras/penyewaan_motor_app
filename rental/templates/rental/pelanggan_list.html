@@ -1,9 +1,12 @@
 {% extends 'rental/base.html' %}
 {% block content %}
+
+
 <h2>Daftar Pelanggan</h2>
-<a href="{% url 'pelanggan_create' %}" class="btn btn-sm btn-success mb-2">Tambah Pelanggan</a>
+<a href="{% url 'pelanggan_create' %}" class="btn btn-sm btn-success mb-2">
+    <i class="fa fa-plus-square" aria-hidden="true"></i> Pelanggan</a>
 <table class="table table-bordered">
-    <tr>
+    <tr style="text-align: center;">
         <th>Nama</th>
         <th>No KTP</th>
         <th>Status</th>
@@ -16,11 +19,17 @@
         <td>{{ p.no_ktp }}</td>
         <td>{{ p.status }}</td>
         <td>{{ p.alamat }}</td>
-        <td>
-            <a href="{% url 'pelanggan_edit' p.pk %}" class="btn btn-sm btn-warning">Edit</a>
-            <a href="{% url 'pelanggan_delete' p.pk %}" class="btn btn-sm btn-danger">Hapus</a>
+        <td style="text-align: center;">
+            <a href="{% url 'pelanggan_edit' p.pk %}" class="btn btn-sm btn-primary">
+                <i class="fa fa-pencil-square" aria-hidden="true"></i>
+            </a>
+            <a href="{% url 'pelanggan_delete' p.pk %}" class="btn btn-sm btn-danger">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </a>
         </td>
     </tr>
     {% endfor %}
 </table>
+
+
 {% endblock %}
