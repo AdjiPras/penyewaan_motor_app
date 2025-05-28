@@ -52,7 +52,12 @@ def dashboard(request):
 def export_pdf_transaksi(request):
     transaksi = Transaksi.objects.all()
     template = get_template('rental/pdf_transaksi.html')
-    html = template.render({'data': transaksi})
+    
+    html = template.render({
+        'data': transaksi,
+        'now': now(),
+    })
+
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="laporan_transaksi.pdf"'
     pisa_status = pisa.CreatePDF(html, dest=response)
@@ -60,11 +65,25 @@ def export_pdf_transaksi(request):
         return HttpResponse('Terjadi kesalahan saat generate PDF: ' + str(pisa_status.err))
     return response
 
-@login_required
+# @login_required
+# def export_pdf_per_transaksi(request, pk):
+#     transaksi = get_object_or_404(Transaksi, pk=pk)
+#     template = get_template('rental/pdf_per_transaksi.html')
+#     html = template.render({'t': transaksi})
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = f'attachment; filename="transaksi_{transaksi.pk}.pdf"'
+#     pisa.CreatePDF(html, dest=response)
+#     return response
 def export_pdf_per_transaksi(request, pk):
     transaksi = get_object_or_404(Transaksi, pk=pk)
     template = get_template('rental/pdf_per_transaksi.html')
-    html = template.render({'t': transaksi})
+    
+    # ✅ Tambahkan 'now' ke dalam context
+    html = template.render({
+        't': transaksi,
+        'now': now(),
+    })
+
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="transaksi_{transaksi.pk}.pdf"'
     pisa.CreatePDF(html, dest=response)

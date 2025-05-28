@@ -1,22 +1,90 @@
 {% load format_uang %}
 <!DOCTYPE html>
-<html>
-<head><title>Laporan Transaksi</title></head>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Transaksi</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+
+        .report-box {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f7f7f7;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 8px;
+            border-bottom: 2px solid #ccc;
+            text-align: left;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
 <body>
-<h2>Laporan Transaksi Penyewaan Motor</h2>
-<table border="1" cellspacing="0" cellpadding="4">
-<tr>
-    <th>Nama</th><th>Motor</th><th>Tgl Sewa</th><th>Tgl Kembali</th><th>Total</th>
-</tr>
-{% for t in data %}
-<tr>
-    <td>{{ t.pelanggan.nama }}</td>
-    <td>{{ t.motor.plat_nomor }}</td>
-    <td>{{ t.tanggal_sewa }}</td>
-    <td>{{ t.tanggal_kembali }}</td>
-    <td>{{ t.total_harga|rupiah }}</td>
-</tr>
-{% endfor %}
-</table>
+    <div class="report-box">
+        <h2>Laporan Transaksi Penyewaan Motor</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama Pelanggan</th>
+                    <th>Motor</th>
+                    <th>Tgl Sewa</th>
+                    <th>Tgl Kembali</th>
+                    <th>Total Harga</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in data %}
+                <tr>
+                    <td>{{ t.pelanggan.nama }}</td>
+                    <td>{{ t.motor.plat_nomor }}</td>
+                    <td>{{ t.tanggal_sewa }}</td>
+                    <td>{{ t.tanggal_kembali }}</td>
+                    <td>{{ t.total_harga|rupiah }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="footer">
+            Dicetak pada: {{ now|date:"d M Y H:i" }}<br>
+            Terima kasih atas kepercayaan Anda menyewa motor di tempat kami.<br>
+            NAMA BRAND
+        </div>
+    </div>
 </body>
 </html>
