@@ -6,8 +6,9 @@
 <div class="d-flex align-items-center gap-2 mb-3">
     <a href="{% url 'transaksi_create' %}" class="btn btn-sm btn-success">
          <i class="fa fa-plus-square" aria-hidden="true"></i> Transaksi</a>
-    <a href="{% url 'export_pdf_transaksi' %}" class="btn btn-sm btn-warning">
-        <i class="fa fa-print" aria-hidden="true"></i> Cetak PDF</a>
+    <a href="{% url 'export_pdf_transaksi' %}" target="_blank" class="btn btn-sm btn-warning">
+        <i class="fa fa-print" aria-hidden="true"></i> Cetak Laporan
+    </a>
 
     <form method="get" class="ms-auto">
         <div class="input-group input-group-sm">
@@ -41,7 +42,7 @@
             <a href="{% url 'transaksi_delete' t.pk %}" class="btn btn-sm btn-danger">
                 <i class="fa fa-trash" aria-hidden="true"></i>
             </a>
-            <a href="{% url 'export_pdf_per_transaksi' t.pk %}" class="btn btn-sm btn-warning">
+            <a href="{% url 'export_pdf_per_transaksi' t.pk %}" target="_blank" class="btn btn-sm btn-warning">
                 <i class="fa fa-print" aria-hidden="true"></i>
             </a>
         </td>

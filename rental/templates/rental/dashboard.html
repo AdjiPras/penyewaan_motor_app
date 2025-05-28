@@ -58,7 +58,7 @@
             <!-- Status Pelanggan -->
             <div class="col-md-4">
                 <div class="chart-card bg-white" style="box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px; border-radius: 7px;">
-                    <h5 class="text-center mb-3"> Pelanggan</h5>
+                    <h5 class="text-center mb-3"> Riwayat Pelanggan</h5>
                     <canvas id="piePelanggan"></canvas>
                 </div>
             </div>
@@ -71,9 +71,10 @@
         new Chart(ctxMotor, {
             type: 'pie',
             data: {
-                labels: ['Tersedia', 'Tidak Tersedia'],
+                labels: ['Tersedia', 'Tidak'],
                 datasets: [{
                     label: 'Motor',
+                    position: 'right',
                     data: [{{ tersedia }}, {{ tidak_tersedia }}],
                     backgroundColor: ['#28a745', '#dc3545'],
                     borderWidth: 1
@@ -83,7 +84,7 @@
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: 'right',
                         labels: {
                             color: '#333',
                             font: {
@@ -120,7 +121,7 @@
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: 'right',
                         labels: {
                             color: '#333',
                             font: {
@@ -157,11 +158,11 @@
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: 'right',
                         labels: {
                             color: '#333',
                             font: {
-                                size: 14
+                                size: 10
                             }
                         }
                     },
