@@ -8,6 +8,7 @@
 <table class="table table-bordered">
     <tr style="text-align: center;">
         <th>Nama</th>
+        <th>Gender</th>
         <th>No KTP</th>
         <th>Status</th>
         <th>Alamat</th>
@@ -16,6 +17,7 @@
     {% for p in data %}
     <tr>
         <td>{{ p.nama }}</td>
+        <td>{{ p.jenis_kelamin }}</td>
         <td>{{ p.no_ktp }}</td>
         <td>{{ p.status }}</td>
         <td>{{ p.alamat }}</td>
