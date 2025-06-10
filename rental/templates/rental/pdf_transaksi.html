@@ -22,28 +22,24 @@
             margin-bottom: 30px;
         }
 
-        table {
+        table.auto-width {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
         }
 
-        th {
-            background-color: #f7f7f7;
-            color: #333;
-            font-weight: bold;
-            padding: 10px 8px;
-            border-bottom: 2px solid #ccc;
+        table.auto-width td, table.auto-width th {
+            padding: 2px;
+            border: 1px solid #ddd;
+            white-space: nowrap;
+        }
+
+        table.auto-width th {
+            background-color: #f2f2f2;
             text-align: left;
         }
 
-        td {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-        }
-
-        tr:nth-child(even) {
-            background-color: #fafafa;
+        table.auto-width tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
         .footer {
@@ -57,14 +53,14 @@
 <body>
     <div class="report-box">
         <h2>Laporan Transaksi Penyewaan Motor</h2>
-        <table>
+        <table class="auto-width">
             <thead>
                 <tr>
                     <th>Nama Pelanggan</th>
-                    <th>Motor</th>
-                    <th>Tgl Sewa</th>
-                    <th>Tgl Kembaliiii</th>
-                    <th>Total Hargaaa</th>
+                    <th>Plat Nomor</th>
+                    <th>Tanggal Sewa</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Total Harga</th>
                 </tr>
             </thead>
             <tbody>
