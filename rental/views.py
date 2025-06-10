@@ -156,11 +156,11 @@ def pelanggan_delete(request, pk):
 # ================== TRANSAKSI ====================
 @login_required
 def transaksi_list(request):
-    query = request.GET.get('q','')
+    query = request.GET.get('q', '')
     if query:
-        data = Transaksi.objects.filter(pelanggan__nama__icontains=query)
+        data = Transaksi.objects.filter(pelanggan__nama__icontains=query).order_by('-created_at')
     else:
-        data = Transaksi.objects.all()
+        data = Transaksi.objects.all().order_by('-created_at')
     return render(request, 'rental/transaksi_list.html', {'data': data, 'query': query})
 
 
