@@ -1,37 +1,39 @@
 {% extends 'rental/base.html' %}
 {% block content %}
 
-
-<h2>Daftar Pelanggan</h2>
-<a href="{% url 'pelanggan_create' %}" class="btn btn-sm btn-success mb-2">
-    <i class="fa fa-plus-square" aria-hidden="true"></i> Pelanggan</a>
-<table class="table table-bordered">
-    <tr style="text-align: center;">
-        <th>Nama</th>
-        <th>Gender</th>
-        <th>No KTP</th>
-        <th>Status</th>
-        <th>Alamat</th>
-        <th>Aksi</th>
-    </tr>
-    {% for p in data %}
-    <tr>
-        <td>{{ p.nama }}</td>
-        <td>{{ p.jenis_kelamin }}</td>
-        <td>{{ p.no_ktp }}</td>
-        <td>{{ p.status }}</td>
-        <td>{{ p.alamat }}</td>
-        <td style="text-align: center;">
-            <a href="{% url 'pelanggan_edit' p.pk %}" class="btn btn-sm btn-primary">
-                <i class="fa fa-pencil-square" aria-hidden="true"></i>
-            </a>
-            <a href="{% url 'pelanggan_delete' p.pk %}" class="btn btn-sm btn-danger">
-                <i class="fa fa-trash" aria-hidden="true"></i>
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="mt-5">
+    <a href="{% url 'pelanggan_create' %}" class="btn btn-sm btn-success mb-2">
+        <i class="fa fa-plus-square" aria-hidden="true"></i> Pelanggan</a>
+    <table class="table table-bordered">
+        <tr style="text-align: center;">
+            <th>No.</th>
+            <th>Nama</th>
+            <th>Gender</th>
+            <th>No KTP</th>
+            <th>Status</th>
+            <th>Alamat</th>
+            <th>Aksi</th>
+        </tr>
+        {% for p in data %}
+        <tr style="text-align: center;">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ p.nama }}</td>
+            <td>{{ p.jenis_kelamin }}</td>
+            <td>{{ p.no_ktp }}</td>
+            <td>{{ p.status }}</td>
+            <td style="text-align: left !important;">{{ p.alamat }}</td>
+            <td style="text-align: center;">
+                <a href="{% url 'pelanggan_edit' p.pk %}" class="btn btn-sm btn-primary">
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'pelanggan_delete' p.pk %}" class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 
 {% endblock %}

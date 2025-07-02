@@ -2,38 +2,49 @@
 {% load format_uang %}
 {% block content %}
 
-
-<h2>Daftar Motor</h2>
-<a href="{% url 'motor_create' %}" class="btn btn-sm btn-success mb-2">
-    <i class="fa fa-plus-square" aria-hidden="true"></i> Motor
-</a>
-<table class="table table-bordered">
-    <tr style="text-align: center;">
-        <th>Merk</th>
-        <th>Plat Nomor</th>
-        <th>Harga Sewa</th>
-        <th>Tersedia</th>
-        <th>Jml Unit</th>
-        <th>Aksi</th>
-    </tr>
-    {% for motor in data %}
-    <tr>
-        <td>{{ motor.merk }}</td>
-        <td>{{ motor.plat_nomor }}</td>
-        <td>Rp. {{ motor.harga_sewa_per_hari|rupiah }}</td>
-        <td>{{ motor.tersedia }}</td>
-        <td>{{ motor.jumlah_unit }}</td>
-        <td style="text-align: center;">
-            <a href="{% url 'motor_edit' motor.pk %}" class="btn btn-sm btn-primary">
-                <i class="fa fa-pencil-square" aria-hidden="true"></i>
-            </a>
-            <a href="{% url 'motor_delete' motor.pk %}" class="btn btn-sm btn-danger">
-                <i class="fa fa-trash" aria-hidden="true"></i>
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-
+<div class="mt-5">
+    <a href="{% url 'motor_create' %}" class="btn btn-sm btn-success mb-2">
+        <i class="fa fa-plus-square" aria-hidden="true"></i> Motor
+    </a>
+    <table class="table table-bordered mb-5">
+        <tr style="text-align: center;">
+            <th>No.</th>
+            <th>Merk</th>
+            <th>Plat Nomor</th>
+            <th>Harga Sewa</th>
+            <th>Tersedia</th>
+            <th>Jml Unit</th>
+            <th>Aksi</th>
+        </tr>
+        {% for motor in data %}
+        <tr style="text-align: center;">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ motor.merk }}</td>
+            <td>{{ motor.plat_nomor }}</td>
+            <td>Rp. {{ motor.harga_sewa_per_hari|rupiah }}</td>
+            <td>
+                {% if motor.tersedia %}
+                    <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                {% else %}
+                    {% if motor.jumlah_unit == 0 %}
+                        <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                    {% else %}
+                        <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td>{{ motor.jumlah_unit }}</td>
+            <td style="text-align: center;">
+                <a href="{% url 'motor_edit' motor.pk %}" class="btn btn-sm btn-primary">
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'motor_delete' motor.pk %}" class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 {% endblock %}
