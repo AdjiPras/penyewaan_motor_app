@@ -13,6 +13,7 @@
         <th>Plat Nomor</th>
         <th>Harga Sewa</th>
         <th>Tersedia</th>
+        <th>Jml Unit</th>
         <th>Aksi</th>
     </tr>
     {% for motor in data %}
@@ -21,6 +22,7 @@
         <td>{{ motor.plat_nomor }}</td>
         <td>Rp. {{ motor.harga_sewa_per_hari|rupiah }}</td>
         <td>{{ motor.tersedia }}</td>
+        <td>{{ motor.jumlah_unit }}</td>
         <td style="text-align: center;">
             <a href="{% url 'motor_edit' motor.pk %}" class="btn btn-sm btn-primary">
                 <i class="fa fa-pencil-square" aria-hidden="true"></i>

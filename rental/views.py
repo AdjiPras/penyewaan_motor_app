@@ -216,10 +216,11 @@ def transaksi_delete(request, pk):
 @login_required
 def kembalikan_motor(request, pk):
     transaksi = get_object_or_404(Transaksi, pk=pk)
-    transaksi.status_pengembalian = True
-    transaksi.motor.tersedia = True
-    transaksi.motor.save()
-    transaksi.save()
+    if not transaksi.status_pengembalian:
+        transaksi.status_pengembalian = True
+        transaksi.motor.jumlah_unit += 1
+        transaksi.motor.update_ketersediaan()
+        transaksi.save()
     return redirect('transaksi_list')
 
 
