@@ -2,65 +2,70 @@
 {% load format_uang %}
 {% block content %}
 
-<h2>Daftar Transaksi</h2>
-<div class="d-flex align-items-center gap-2 mb-3">
-    <a href="{% url 'transaksi_create' %}" class="btn btn-sm btn-success">
-         <i class="fa fa-plus-square" aria-hidden="true"></i> Transaksi</a>
-    <a href="{% url 'export_pdf_transaksi' %}" target="_blank" class="btn btn-sm btn-warning">
-        <i class="fa fa-print" aria-hidden="true"></i> Cetak Laporan
-    </a>
+<div class="mt-5">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <a href="{% url 'transaksi_create' %}" class="btn btn-sm btn-success">
+            <i class="fa fa-plus-square" aria-hidden="true"></i> Transaksi</a>
+        <a href="{% url 'export_pdf_transaksi' %}" target="_blank" class="btn btn-sm btn-warning">
+            <i class="fa fa-print" aria-hidden="true"></i> Cetak Laporan
+        </a>
 
-    <form method="get" class="ms-auto">
-        <div class="input-group input-group-sm">
-            <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
-            <input type="text" name="q" placeholder="Cari nama pelanggan..." 
-                class="form-control" value="{{ query }}">
-        </div>
-    </form>
-</div>
+        <form method="get" class="ms-auto">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
+                <input type="text" name="q" placeholder="Cari nama pelanggan..." 
+                    class="form-control" value="{{ query }}">
+            </div>
+        </form>
+    </div>
 
-<table class="table table-bordered">
-    <tr style="text-align: center;">
-        <th>Pelanggan</th>
-        <th>Motor</th>
-        <th>Tgl Sewa</th>
-        <th>Tgl Kembali</th>
-        <th>Total Harga</th>
-        <th colspan="2">Aksi</th>
-    </tr>
-    {% for t in data %}
-    <tr>
-        <td>{{ t.pelanggan.nama }}</td>
-        <td>{{ t.motor.plat_nomor }}</td>
-        <td>{{ t.tanggal_sewa }}</td>
-        <td>{{ t.tanggal_kembali }}</td>
-        <td>Rp. {{ t.total_harga|rupiah }}</td>
-        <td style="text-align: center;">
-            <a href="{% url 'transaksi_edit' t.pk %}" class="btn btn-sm btn-primary">
-                <i class="fa fa-pencil-square" aria-hidden="true"></i>
-            </a>
-            <a href="{% url 'transaksi_delete' t.pk %}" class="btn btn-sm btn-danger">
-                <i class="fa fa-trash" aria-hidden="true"></i>
-            </a>
-            <a href="{% url 'export_pdf_per_transaksi' t.pk %}" target="_blank" class="btn btn-sm btn-warning">
-                <i class="fa fa-print" aria-hidden="true"></i>
-            </a>
-        </td>
-        <td style="text-align: center;">
-            {% if not t.status_pengembalian %}
-                <a href="{% url 'kembalikan_motor' t.pk %}" class="btn btn-sm btn-dark">
-                    <i class="fa fa-reply" aria-hidden="true"></i>
-                    Kembalikan
+    <table class="table table-bordered">
+        <tr style="text-align: center;">
+            <th>No.</th>
+            <th>Pelanggan</th>
+            <th>Merk</th>
+            <th>Motor</th>
+            <th>Tgl Sewa</th>
+            <th>Tgl Kembali</th>
+            <th>Total Harga</th>
+            <th colspan="2">Aksi</th>
+        </tr>
+        {% for t in data %}
+        <tr style="text-align: center;">
+            <td>{{ forloop.counter }}</td>
+            <td>{{ t.pelanggan.nama }}</td>
+            <td>{{ t.motor.merk }}</td>
+            <td>{{ t.motor.plat_nomor }}</td>
+            <td>{{ t.tanggal_sewa }}</td>
+            <td>{{ t.tanggal_kembali }}</td>
+            <td>Rp. {{ t.total_harga|rupiah }}</td>
+            <td style="text-align: center;">
+                <a href="{% url 'transaksi_edit' t.pk %}" class="btn btn-sm btn-primary">
+                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
                 </a>
-            {% else %}
-                <span class="btn btn-sm btn-success">
-                    <i class="fa fa-check-square" aria-hidden="true"></i>
-                    Selesai
-                </span>
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+                <a href="{% url 'transaksi_delete' t.pk %}" class="btn btn-sm btn-danger">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>
+                <a href="{% url 'export_pdf_per_transaksi' t.pk %}" target="_blank" class="btn btn-sm btn-warning">
+                    <i class="fa fa-print" aria-hidden="true"></i>
+                </a>
+            </td>
+            <td style="text-align: center;">
+                {% if not t.status_pengembalian %}
+                    <a href="{% url 'kembalikan_motor' t.pk %}" class="btn btn-sm btn-dark">
+                        <i class="fa fa-reply" aria-hidden="true"></i>
+                        Kembalikan
+                    </a>
+                {% else %}
+                    <span class="btn btn-sm btn-success">
+                        <i class="fa fa-check-square" aria-hidden="true"></i>
+                        Selesai
+                    </span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 {% endblock %}
