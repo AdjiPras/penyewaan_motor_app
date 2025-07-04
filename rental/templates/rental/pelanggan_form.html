@@ -1,0 +1,16 @@
+<form method="post" class="js-pelanggan-create-form" action="{% url 'pelanggan_create' %}">
+  {% csrf_token %}
+  <div class="modal-header">
+    <h5 class="modal-title">Tambah Pelanggan</h5>
+    <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal" aria-label="Close">
+        <i class="fa fa-times"></i>
+    </button>
+  </div>
+  <div class="modal-body">
+    {{ form.as_p }}
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-sm btn-success">Simpan</button>
+    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Tutup</button>
+  </div>
+</form>
