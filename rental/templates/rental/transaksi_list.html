@@ -4,8 +4,9 @@
 
 <div class="mt-5">
     <div class="d-flex align-items-center gap-2 mb-3">
-        <a href="{% url 'transaksi_create' %}" class="btn btn-sm btn-success">
-            <i class="fa fa-plus-square" aria-hidden="true"></i> Transaksi</a>
+        <button type="button" class="btn btn-sm btn-success" id="addTransaksiBtn">
+            <i class="fa fa-plus-square" aria-hidden="true"></i> Transaksi
+        </button>
         <a href="{% url 'export_pdf_transaksi' %}" target="_blank" class="btn btn-sm btn-warning">
             <i class="fa fa-print" aria-hidden="true"></i> Cetak Laporan
         </a>
@@ -14,58 +15,138 @@
             <div class="input-group input-group-sm">
                 <span class="input-group-text"><i class="fa fa-search" aria-hidden="true"></i></span>
                 <input type="text" name="q" placeholder="Cari nama pelanggan..." 
-                    class="form-control" value="{{ query }}">
+                    class="form-control" value="{{ query|default:'' }}">
             </div>
         </form>
     </div>
 
     <table class="table table-bordered">
-        <tr style="text-align: center;">
-            <th>No.</th>
-            <th>Pelanggan</th>
-            <th>Merk</th>
-            <th>Motor</th>
-            <th>Tgl Sewa</th>
-            <th>Tgl Kembali</th>
-            <th>Total Harga</th>
-            <th colspan="2">Aksi</th>
-        </tr>
-        {% for t in data %}
-        <tr style="text-align: center;">
-            <td>{{ forloop.counter }}</td>
-            <td>{{ t.pelanggan.nama }}</td>
-            <td>{{ t.motor.merk }}</td>
-            <td>{{ t.motor.plat_nomor }}</td>
-            <td>{{ t.tanggal_sewa }}</td>
-            <td>{{ t.tanggal_kembali }}</td>
-            <td>Rp. {{ t.total_harga|rupiah }}</td>
-            <td style="text-align: center;">
-                <a href="{% url 'transaksi_edit' t.pk %}" class="btn btn-sm btn-primary">
-                    <i class="fa fa-pencil-square" aria-hidden="true"></i>
-                </a>
-                <a href="{% url 'transaksi_delete' t.pk %}" class="btn btn-sm btn-danger">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                </a>
-                <a href="{% url 'export_pdf_per_transaksi' t.pk %}" target="_blank" class="btn btn-sm btn-warning">
-                    <i class="fa fa-print" aria-hidden="true"></i>
-                </a>
-            </td>
-            <td style="text-align: center;">
-                {% if not t.status_pengembalian %}
-                    <a href="{% url 'kembalikan_motor' t.pk %}" class="btn btn-sm btn-dark">
-                        <i class="fa fa-reply" aria-hidden="true"></i>
-                        Kembalikan
+        <thead style="text-align: center;">
+            <tr>
+                <th>No.</th>
+                <th>Pelanggan</th>
+                <th>Merk</th>
+                <th>Motor</th>
+                <th>Tgl Sewa</th>
+                <th>Tgl Kembali</th>
+                <th>Total Harga</th>
+                <th colspan="2">Aksi</th>
+            </tr>
+        </thead>
+        <tbody style="text-align: center;">
+            {% for t in page_obj %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ t.pelanggan.nama }}</td>
+                <td>{{ t.motor.merk }}</td>
+                <td>{{ t.motor.plat_nomor }}</td>
+                <td>{{ t.tanggal_sewa }}</td>
+                <td>{{ t.tanggal_kembali }}</td>
+                <td>Rp. {{ t.total_harga|rupiah }}</td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-info">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
                     </a>
-                {% else %}
-                    <span class="btn btn-sm btn-success">
-                        <i class="fa fa-check-square" aria-hidden="true"></i>
-                        Selesai
-                    </span>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+                    <a href="{% url 'transaksi_delete' t.pk %}" class="btn btn-sm btn-danger">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                    <a href="{% url 'export_pdf_per_transaksi' t.pk %}" target="_blank" class="btn btn-sm btn-warning">
+                        <i class="fa fa-print"></i>
+                    </a>
+                </td>
+                <td>
+                    {% if not t.status_pengembalian %}
+                        <a href="{% url 'kembalikan_motor' t.pk %}" class="btn btn-sm btn-dark">
+                            <i class="fa fa-reply"></i> Kembalikan
+                        </a>
+                    {% else %}
+                        <span class="btn btn-sm btn-success">
+                            <i class="fa fa-check-square"></i> Selesai
+                        </span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" aria-label="Previous">
+                <i class="fa fa-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                <span class="page-link rounded-circle shadow-sm">{{ num }}</span>
+                </li>
+            {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                <li class="page-item">
+                <a class="page-link rounded-circle shadow-sm" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
+                </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}" aria-label="Next">
+                <i class="fa fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="transaksiModal" tabindex="-1" aria-labelledby="transaksiModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="transaksiModalContent">
+      <!-- AJAX content -->
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  $('#addTransaksiBtn').click(function(){
+    $.ajax({
+      url: "{% url 'transaksi_create' %}",
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function(){
+        $('#transaksiModal').modal('show');
+      },
+      success: function(data){
+        $('#transaksiModalContent').html(data.html_form);
+      }
+    });
+  });
+
+  $('#transaksiModal').on('submit', '.js-transaksi-create-form', function(e){
+    e.preventDefault();
+    var form = $(this);
+    $.ajax({
+      url: form.attr('action'),
+      data: form.serialize(),
+      type: form.attr('method'),
+      dataType: 'json',
+      success: function(data){
+        if (data.success) {
+          location.reload();
+        } else {
+          $('#transaksiModalContent').html(data.html_form);
+        }
+      }
+    });
+  });
+</script>
 {% endblock %}

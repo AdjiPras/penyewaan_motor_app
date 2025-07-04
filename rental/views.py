@@ -11,6 +11,9 @@ from django.db.models import Count
 from django.utils import timezone
 
 from django.utils.timezone import now
+from django.core.paginator import Paginator
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 
 # Home
@@ -91,17 +94,35 @@ def export_pdf_per_transaksi(request, pk):
 
 # ================== MOTOR ====================
 @login_required
+# def motor_list(request):
+#     data = Motor.objects.all()
+#     return render(request, 'rental/motor_list.html', {'data': data})
+
 def motor_list(request):
-    data = Motor.objects.all()
-    return render(request, 'rental/motor_list.html', {'data': data})
+    motor_list = Motor.objects.all().order_by('id')
+    paginator = Paginator(motor_list, 8)  # 8 data per halaman
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'page_obj': page_obj,
+    }
+    return render(request, 'rental/motor_list.html', context)
 
 @login_required
 def motor_create(request):
-    form = MotorForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('motor_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Data Motor'})
+    if request.method == 'POST':
+        form = MotorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+    else:
+        form = MotorForm()
+
+    context = {'form': form}
+    html_form = render_to_string('rental/motor_form.html', context, request=request)
+    return JsonResponse({'html_form': html_form})
 
 @login_required
 def motor_edit(request, pk):
@@ -123,17 +144,32 @@ def motor_delete(request, pk):
 
 # ================== PELANGGAN ====================
 @login_required
-def pelanggan_list(request):
-    data = Pelanggan.objects.all()
-    return render(request, 'rental/pelanggan_list.html', {'data': data})
+# def pelanggan_list(request):
+#     data = Pelanggan.objects.all()
+#     return render(request, 'rental/pelanggan_list.html', {'data': data})
 
-@login_required
+def pelanggan_list(request):
+    pelanggan_list = Pelanggan.objects.all().order_by('id')
+    paginator = Paginator(pelanggan_list, 8)  # 8 data per halaman
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {'page_obj': page_obj}
+    return render(request, 'rental/pelanggan_list.html', context)
+
 def pelanggan_create(request):
-    form = PelangganForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect('pelanggan_list')
-    return render(request, 'rental/form.html', {'form': form, 'title': 'Tambah Data Pelanggan'})
+    if request.method == 'POST':
+        form = PelangganForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True})
+    else:
+        form = PelangganForm()
+
+    context = {'form': form}
+    html_form = render_to_string('rental/pelanggan_form.html', context, request=request)
+    return JsonResponse({'html_form': html_form})
 
 @login_required
 def pelanggan_edit(request, pk):
@@ -155,13 +191,28 @@ def pelanggan_delete(request, pk):
 
 # ================== TRANSAKSI ====================
 @login_required
+# def transaksi_list(request):
+#     query = request.GET.get('q', '')
+#     if query:
+#         data = Transaksi.objects.filter(pelanggan__nama__icontains=query).order_by('-created_at')
+#     else:
+#         data = Transaksi.objects.all().order_by('-created_at')
+#     return render(request, 'rental/transaksi_list.html', {'data': data, 'query': query})
 def transaksi_list(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('q')
+    transaksi_list = Transaksi.objects.all().order_by('-id')
+
     if query:
-        data = Transaksi.objects.filter(pelanggan__nama__icontains=query).order_by('-created_at')
-    else:
-        data = Transaksi.objects.all().order_by('-created_at')
-    return render(request, 'rental/transaksi_list.html', {'data': data, 'query': query})
+        transaksi_list = transaksi_list.filter(pelanggan__nama__icontains=query)
+
+    paginator = Paginator(transaksi_list, 8)  # 8 transaksi per halaman
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'rental/transaksi_list.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
 
 
 @login_required
@@ -170,19 +221,12 @@ def transaksi_create(request):
         form = TransaksiForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('transaksi_list')  # Ganti sesuai nama url kamu
+            return JsonResponse({'success': True})
     else:
         form = TransaksiForm()
 
-    # Motor list dikirim ke template untuk JavaScript
-    motor_list = Motor.objects.all()
-    
-    return render(request, 'rental/form.html', {
-        'form': form,
-        'motor_list': motor_list,
-        'title': 'Tambah Transaksi',
-    })
-
+    html_form = render_to_string('rental/transaksi_form.html', {'form': form}, request=request)
+    return JsonResponse({'html_form': html_form})
     
 
 @login_required
