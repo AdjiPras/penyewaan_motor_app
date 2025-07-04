@@ -55,6 +55,35 @@
       z-index: 9999;
       transition: all 0.3s ease;
     }
+
+    /* Paginasi */
+    .pagination .page-link {
+      border: none;
+      margin: 0 4px;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      line-height: 40px;
+      text-align: center;
+      color: #333;
+      background-color: #fff;
+      transition: all 0.3s ease;
+    }
+
+    .pagination .page-item.active .page-link {
+      background-color: #245f9e;
+      color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    }
+
+    .pagination .page-link:hover {
+      background-color: #245f9e;
+      color: #fff;
+    }
+
+    .pagination .page-link i {
+      vertical-align: middle;
+    }
   </style>
 </head>
 
@@ -159,7 +188,7 @@
   <!-- Footer -->
   <footer class="main-footer">
     <div class="footer-inner">
-      &copy; {{ now.year }} Jasa Penyewaan Motor. <b>Supported by:</b> @heroezweb
+      &copy; {{ now.year }} Jasa Penyewaan Motor. <b>Supported by:</b> heroezweb
     </div>
   </footer>
 
