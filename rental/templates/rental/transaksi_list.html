@@ -20,55 +20,69 @@
         </form>
     </div>
 
-    <table class="table table-bordered">
-        <thead style="text-align: center;">
-            <tr>
-                <th>No.</th>
-                <th>Pelanggan</th>
-                <th>Merk</th>
-                <th>Motor</th>
-                <th>Tgl Sewa</th>
-                <th>Tgl Kembali</th>
-                <th>Total Harga</th>
-                <th colspan="2">Aksi</th>
-            </tr>
-        </thead>
-        <tbody style="text-align: center;">
-            {% for t in page_obj %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ t.pelanggan.nama }}</td>
-                <td>{{ t.motor.merk }}</td>
-                <td>{{ t.motor.plat_nomor }}</td>
-                <td>{{ t.tanggal_sewa }}</td>
-                <td>{{ t.tanggal_kembali }}</td>
-                <td>Rp. {{ t.total_harga|rupiah }}</td>
-                <td>
-                    <a href="#" class="btn btn-sm btn-info">
-                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                    </a>
-                    <a href="{% url 'transaksi_delete' t.pk %}" class="btn btn-sm btn-danger">
-                        <i class="fa fa-trash" aria-hidden="true"></i>
-                    </a>
-                    <a href="{% url 'export_pdf_per_transaksi' t.pk %}" target="_blank" class="btn btn-sm btn-warning">
-                        <i class="fa fa-print"></i>
-                    </a>
-                </td>
-                <td>
-                    {% if not t.status_pengembalian %}
-                        <a href="{% url 'kembalikan_motor' t.pk %}" class="btn btn-sm btn-dark">
-                            <i class="fa fa-reply"></i> Kembalikan
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead style="text-align: center;">
+                <tr>
+                    <th>No.</th>
+                    <th>Pelanggan</th>
+                    <th class="d-none d-md-table-cell">Merk</th>
+                    <th class="d-none d-md-table-cell">Motor</th>
+                    <th class="d-none d-md-table-cell">Tgl Sewa</th>
+                    <th class="d-none d-md-table-cell">Tgl Kembali</th>
+                    <th class="d-none d-md-table-cell">Total Harga</th>
+                    <th colspan="2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center;">
+                {% for t in page_obj %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ t.pelanggan.nama }}</td>
+                    <td class="d-none d-md-table-cell">{{ t.motor.merk }}</td>
+                    <td class="d-none d-md-table-cell">{{ t.motor.plat_nomor }}</td>
+                    <td class="d-none d-md-table-cell">{{ t.tanggal_sewa }}</td>
+                    <td class="d-none d-md-table-cell">{{ t.tanggal_kembali }}</td>
+                    <td class="d-none d-md-table-cell">Rp. {{ t.total_harga|rupiah }}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-primary btn-toggle-details">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        <a href="#" class="btn btn-sm btn-info">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>
-                    {% else %}
-                        <span class="btn btn-sm btn-success">
-                            <i class="fa fa-check-square"></i> Selesai
-                        </span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                        <a href="{% url 'transaksi_delete' t.pk %}" class="btn btn-sm btn-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'export_pdf_per_transaksi' t.pk %}" target="_blank" class="btn btn-sm btn-warning">
+                            <i class="fa fa-print"></i>
+                        </a>
+                    </td>
+                    <td>
+                        {% if not t.status_pengembalian %}
+                            <a href="{% url 'kembalikan_motor' t.pk %}" class="btn btn-sm btn-dark">
+                                <i class="fa fa-reply"></i>
+                            </a>
+                        {% else %}
+                            <span class="btn btn-sm btn-success">
+                                <i class="fa fa-check-square"></i>
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="table-details-row d-none">
+                    <td colspan="9" class="text-start bg-light">
+                        <b>Merk:</b> {{ t.motor.merk }}<br>
+                        <b>Motor:</b> {{ t.motor.plat_nomor }}<br>
+                        <b>Tgl Sewa:</b> {{ t.tanggal_sewa }}<br>
+                        <b>Tgl Kembali:</b> {{ t.tanggal_kembali }}<br>
+                        <b>Total Harga:</b> Rp. {{ t.total_harga|rupiah }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
@@ -146,6 +160,13 @@
           $('#transaksiModalContent').html(data.html_form);
         }
       }
+    });
+  });
+
+  $(document).ready(function(){
+    $('.btn-toggle-details').click(function(){
+      var row = $(this).closest('tr').next('.table-details-row');
+      row.toggleClass('d-none');
     });
   });
 </script>
