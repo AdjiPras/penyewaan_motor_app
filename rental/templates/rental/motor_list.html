@@ -22,52 +22,70 @@
       </div>
     </form>
   </div>
-    
-  <table class="table table-bordered mb-2">
-      <thead style="text-align: center;">
-          <tr>
-              <th>No.</th>
-              <th>Merk</th>
-              <th>Plat Nomor</th>
-              <th>Harga Sewa</th>
-              <th>Tersedia</th>
-              <th>Jml Unit</th>
-              <th>Aksi</th>
-          </tr>
-      </thead>
-      <tbody style="text-align: center;">
-          {% for motor in page_obj %}
-          <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ motor.merk }}</td>
-              <td>{{ motor.plat_nomor }}</td>
-              <td>Rp. {{ motor.harga_sewa_per_hari|rupiah }}</td>
-              <td>
-                  {% if motor.tersedia %}
-                      <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
-                  {% else %}
-                      <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
-                  {% endif %}
+  
+  <div class="table-responsive">
+    <table class="table table-bordered mb-2">
+        <thead style="text-align: center;">
+            <tr>
+                <th>No.</th>
+                <th>Merk</th>
+                <th class="d-none d-md-table-cell">Plat Nomor</th>
+                <th class="d-none d-md-table-cell">Harga Sewa</th>
+                <th class="d-none d-md-table-cell">Tersedia</th>
+                <th class="d-none d-md-table-cell">Jml Unit</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody style="text-align: center;">
+            {% for motor in page_obj %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ motor.merk }}</td>
+                <td class="d-none d-md-table-cell">{{ motor.plat_nomor }}</td>
+                <td class="d-none d-md-table-cell">Rp. {{ motor.harga_sewa_per_hari|rupiah }}</td>
+                <td class="d-none d-md-table-cell">
+                    {% if motor.tersedia %}
+                        <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+                    {% else %}
+                        <i class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                    {% endif %}
+                </td>
+                <td class="d-none d-md-table-cell">{{ motor.jumlah_unit }}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-primary btn-toggle-details">
+                      <i class="fa fa-eye"></i>
+                    </button>
+                    <a href="#" class="btn btn-sm btn-info">
+                      <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                    <a href="{% url 'motor_delete' motor.pk %}" class="btn btn-sm btn-danger">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                </td>
+            </tr>
+            <tr class="table-details-row d-none">
+              <td colspan="7" class="text-start bg-light">
+                <b>Plat Nomor:</b> {{ motor.plat_nomor }}<br>
+                <b>Harga Sewa:</b> Rp. {{ motor.harga_sewa_per_hari|rupiah }}<br>
+                <b>Tersedia:</b>
+                {% if motor.tersedia %}
+                  <i class="fa fa-check-circle text-success"></i> Ya
+                {% else %}
+                  <i class="fa fa-times-circle text-danger"></i> Tidak
+                {% endif %}<br>
+                <b>Jumlah Unit:</b> {{ motor.jumlah_unit }}
               </td>
-              <td>{{ motor.jumlah_unit }}</td>
-              <td>
-                  <a href="#" class="btn btn-sm btn-info">
-                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                  </a>
-                  <a href="{% url 'motor_delete' motor.pk %}" class="btn btn-sm btn-danger">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                  </a>
-              </td>
-          </tr>
-          {% endfor %}
-      </tbody>
-  </table>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
 
   <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
       {% if page_obj.has_previous %}
         <li class="page-item">
-          <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+          <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}" aria-label="Previous">
             <i class="fa fa-chevron-left"></i>
           </a>
         </li>
@@ -80,14 +98,14 @@
           </li>
         {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
           <li class="page-item">
-            <a class="page-link rounded-circle shadow-sm" href="?page={{ num }}">{{ num }}</a>
+            <a class="page-link rounded-circle shadow-sm" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">{{ num }}</a>
           </li>
         {% endif %}
       {% endfor %}
 
       {% if page_obj.has_next %}
         <li class="page-item">
-          <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+          <a class="page-link rounded-circle shadow-sm" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}" aria-label="Next">
             <i class="fa fa-chevron-right"></i>
           </a>
         </li>
@@ -139,6 +157,13 @@
           $('#motorModalContent').html(data.html_form);
         }
       }
+    });
+  });
+
+  $(document).ready(function(){
+    $('.btn-toggle-details').click(function(){
+      var row = $(this).closest('tr').next('.table-details-row');
+      row.toggleClass('d-none');
     });
   });
 </script>
